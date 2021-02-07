@@ -1,6 +1,4 @@
-package Tests;
-
-import static org.testng.Assert.*;
+package tests;
 
 public class AccountServiceTest {
 

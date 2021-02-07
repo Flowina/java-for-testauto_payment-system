@@ -1,0 +1,156 @@
+package dao;
+
+import entities.Client;
+
+import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//TODO: Close all connections and statements
+public class ClientDaoImpl implements ClientDao<Integer> {
+    private ConnectionFactory connectionFactory;
+
+    public ClientDaoImpl(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
+    @Override
+    public void create(Client client) throws SQLException {
+        final Connection con = connectionFactory.getConnection();
+        try {
+            final Statement stm = con.createStatement();
+
+            String query = "INSERT INTO clients " +
+                    "(lastName, firstName, dateOfBirth) " +
+                    "VALUES ('" + client.getLastName() + "','" + client.getFirstName() + "','" + client.getDateOfBirth() + "') ";
+
+            int affectedRows = stm.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+            try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    client.setId(generatedKeys.getInt(1));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public List<Client> getAll() throws SQLException {
+        List<Client> result = new LinkedList<>();
+        final String sql = "SELECT * FROM clients;";
+        final Connection con = connectionFactory.getConnection();
+        try (Statement stm = con.createStatement();
+             ResultSet rs = stm.executeQuery(sql)) {
+            while (rs.next()) {
+                result.add(new Client(
+                        rs.getInt("id"),
+                        rs.getString("lastName"),
+                        rs.getString("firstName"),
+                        rs.getDate("dateOfBirth")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    @Override
+    public Client findById(Integer id) throws SQLException {
+        final Connection con = connectionFactory.getConnection();
+        final String sql = "SELECT * FROM clients WHERE id = " + id;
+        try {
+            //TODO: use preparedstatement
+            final Statement stm = con.createStatement();
+
+            ResultSet rs = stm.executeQuery(sql);
+
+            while (rs.next()) {
+                return new Client(
+                        rs.getInt("id"),
+                        rs.getString("lastName"),
+                        rs.getString("firstName"),
+                        rs.getDate("dateOfBirth"));
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void update(Client client) throws SQLException {
+        final Connection con = connectionFactory.getConnection();
+        try {
+            final Statement stm = con.createStatement();
+            String query = "UPDATE clients SET " +
+                    "lastName='" + client.getLastName()+ "'," +
+                    "firstName='" + client.getFirstName() + "'," +
+                    "dateOfBirth='" + client.getDateOfBirth() + "'  " +
+                    "WHERE id=" + client.getId() + " ;";
+            stm.executeUpdate(query);
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(Client client) throws SQLException {
+        final Connection con = connectionFactory.getConnection();
+        try {
+            final Statement stm = con.createStatement();
+            String query = "DELETE FROM clients WHERE id=" + client.getId() + " ;";
+            stm.executeUpdate(query);
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Client> findByName(String name) throws SQLException {
+        List<Client> result = new LinkedList<>();
+        final Connection con = connectionFactory.getConnection();
+        final String sql = "SELECT * FROM clients WHERE CONCAT(' ',firstName,lastName) like ?";
+        try {
+            PreparedStatement pstm = con.prepareStatement(sql);
+            pstm.setString(1, "%" + name + "%");
+
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                result.add(new Client(
+                        rs.getInt("id"),
+                        rs.getString("lastName"),
+                        rs.getString("firstName"),
+                        rs.getDate("dateOfBirth")));
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+}

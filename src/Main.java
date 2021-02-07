@@ -1,66 +1,62 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import services.ClientService;
+import dao.ClientDao;
+import dao.ClientDaoImpl;
+import dao.ConnectionFactory;
+import dao.ConnectionFactoryImpl;
+import entities.Client;
+
+import java.sql.*;
+import java.util.List;
+
 public class Main {
-
-    // JDBC URL, username and password of MySQL server
-    private static final String url = "jdbc:mysql://127.0.0.1:3306/payment_system?serverTimezone=UTC";
-    private static final String user = "root";
-    private static final String password = "MySQL2307";
-
-    // JDBC variables for opening and managing connection
-    private static Connection con;
-    private static Statement stmt;
-    private static ResultSet rs;
-
     public static void main(String args[]) {
-        // Create a variable for the connection string.dbHost\sqlexpress
-        String connectionUrl = "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=PaymentSystem;user=java;password=java123";
+        ConnectionFactory connectionFactory = new ConnectionFactoryImpl(
+                "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=PaymentSystem;",
+                "java",
+                "java123"
+        );
 
-        try (Connection con = DriverManager.getConnection(connectionUrl); Statement stmt = con.createStatement();) {
-            //createTable(stmt);
-            String SQL = "SELECT * FROM dbo.Clients;";
-            ResultSet rs = stmt.executeQuery(SQL);
-            while (rs.next()) {
-                System.out.println(rs.getString("id")
-                        + " : " + rs.getString("firstName")
-                        + " " + rs.getString("lastName")
-                        + ", " + rs.getString("dateOfBirth"));
-            }
-        }
-        // Handle any errors that may have occurred.
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        String query = "select * from clients";
+        /*ConnectionFactory connectionFactory = new ConnectionFactoryImpl(
+                "jdbc:mysql://127.0.0.1:3306/payment_system?serverTimezone=UTC",
+                "root",
+                "MySQL2307"
+        );*/
 
+        ClientDao<Integer> clientDao = new ClientDaoImpl(connectionFactory);
+        ClientService<Integer> clientService = new ClientService<Integer>(clientDao);
+        List<Client> clients = null;
         try {
-            // opening database connection to MySQL server
-            con = DriverManager.getConnection(url, user, password);
-
-            // getting Statement object to execute query
-            stmt = con.createStatement();
-
-            // executing SELECT query
-            rs = stmt.executeQuery(query);
-
-            while (rs.next()) {
-                System.out.println(rs.getString("id")
-                        + " : " + rs.getString("firstName")
-                        + " " + rs.getString("lastName")
-                        + ", " + rs.getDate("dateOfBirth"));
+            Client newClient = new Client("Lara", "Croft", Date.valueOf("1959-02-14"));
+            clientService.create(newClient);
+            clients = clientDao.getAll();
+            for (Client c:
+                    clients) {
+                System.out.println(c);
             }
 
-        } catch (SQLException sqlEx) {
-            sqlEx.printStackTrace();
-        } finally {
-            //close connection ,stmt and resultset here
-            try { con.close(); } catch(SQLException se) { /*can't do anything */ }
-            try { stmt.close(); } catch(SQLException se) { /*can't do anything */ }
-            try { rs.close(); } catch(SQLException se) { /*can't do anything */ }
+            Client client = clientDao.findById(newClient.getId());
+            System.out.println(client);
+
+            List<Client> clientsByName = clientService.findByName("ro");
+            for (Client c:
+                    clientsByName) {
+                System.out.println(c);
+            }
+
+            client.setLastName("foo");
+            clientService.update(client);
+            System.out.println(client);
+
+            clientService.delete(client);
+
+            clients = clientDao.getAll();
+            for (Client c:
+                    clients) {
+                System.out.println(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
