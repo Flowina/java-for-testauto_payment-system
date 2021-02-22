@@ -2,7 +2,7 @@ import services.ClientService;
 import dao.ClientDao;
 import dao.ClientDaoImpl;
 import dao.ConnectionFactory;
-import dao.ConnectionFactoryImpl;
+import dao.DbConnectionFactory;
 import entities.Client;
 
 import java.sql.*;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String args[]) {
-        ConnectionFactory connectionFactory = new ConnectionFactoryImpl(
+        ConnectionFactory connectionFactory = new DbConnectionFactory(
                 "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=PaymentSystem;",
                 "java",
                 "java123"

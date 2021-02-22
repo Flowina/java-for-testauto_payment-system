@@ -3,10 +3,10 @@ package dao;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CrudDao<T, U> {
-    void create(T object) throws SQLException;
-    List<T> getAll() throws SQLException;
-    T findById(U id) throws SQLException;
-    void update(T object) throws SQLException;
-    void delete(T object) throws SQLException;
+public interface CrudDao<Tobj, Tid> {
+    void create(Tobj object) throws SQLException;
+    List<Tobj> getAll() throws SQLException;
+    Tobj findById(Tid id) throws SQLException;
+    void update(Tobj object) throws SQLException;
+    void delete(Tobj object) throws SQLException;
 }
