@@ -93,8 +93,8 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public List<Account> getAll() throws SQLException {
-        List<Account> result = new LinkedList<>();
+    public List<Account<Integer>> getAll() throws SQLException {
+        List<Account<Integer>> result = new LinkedList<>();
         final String sql = "SELECT * FROM accounts;";
         final Connection con = connectionFactory.getConnection();
         try (Statement stm = con.createStatement();
@@ -184,7 +184,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public void delete(Account account) throws SQLException {
+    public void delete(Account<Integer> account) throws SQLException {
         final Connection con = connectionFactory.getConnection();
         try {
             String sql = "DELETE FROM accounts WHERE id=? ;";

@@ -6,6 +6,6 @@ import entities.Client;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface AccountDao<Tid> extends CrudDao<Account, Tid> {
+public interface AccountDao<Tid> extends CrudDao<Account<Tid>, Tid> {
     List<Account> findByClient(Client client) throws SQLException;
 }
