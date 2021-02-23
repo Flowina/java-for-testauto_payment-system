@@ -5,11 +5,9 @@ CREATE TABLE Accounts(
 	type smallint NOT NULL,
 	amount decimal(10, 2) NOT NULL,
 	opening_date datetime2(0) NOT NULL,
-	closing_date datetime2(0) NULL)
-GO
+	closing_date datetime2(0) NULL);
 
 ALTER TABLE Accounts ADD PRIMARY KEY (id);
-GO
 
 CREATE TABLE Cards(
 	id int IDENTITY(1,1) NOT NULL,
@@ -18,31 +16,27 @@ CREATE TABLE Cards(
 	owner_name varchar(510) NOT NULL,
 	cvv smallint NOT NULL,
 	exp_year numeric(4, 0) NOT NULL,
-	exp_month smallint NOT NULL)
-GO
+	exp_month smallint NOT NULL);
 
 ALTER TABLE Cards ADD PRIMARY KEY (id);
-GO
 
 CREATE TABLE Clients(
 	id int IDENTITY(1,1) NOT NULL,
 	lastName nvarchar(255) NOT NULL,
 	firstName nvarchar(255) NOT NULL,
-	dateOfBirth date NOT NULL)
-GO
+	dateOfBirth date NOT NULL);
 
 ALTER TABLE Clients ADD PRIMARY KEY (id);
-GO
 
-ALTER TABLE Accounts ADD  DEFAULT (NULL) FOR closing_date
-GO
+ALTER TABLE Accounts ADD  DEFAULT (NULL) FOR closing_date;
+
 ALTER TABLE Accounts  WITH CHECK ADD  CONSTRAINT FK_Accounts_Clients FOREIGN KEY(clientId)
-REFERENCES Clients (id)
-GO
-ALTER TABLE Accounts CHECK CONSTRAINT FK_Accounts_Clients
-GO
+REFERENCES Clients (id);
+
+ALTER TABLE Accounts CHECK CONSTRAINT FK_Accounts_Clients;
+
 ALTER TABLE Cards  WITH CHECK ADD  CONSTRAINT FK_Cards_Accounts FOREIGN KEY(accountId)
-REFERENCES Accounts (id)
-GO
-ALTER TABLE Cards CHECK CONSTRAINT FK_Cards_Accounts
-GO
+REFERENCES Accounts (id);
+
+ALTER TABLE Cards CHECK CONSTRAINT FK_Cards_Accounts;
+

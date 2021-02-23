@@ -12,18 +12,13 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class ClientServiceTest {
-    ConnectionFactory connectionFactory = new DbConnectionFactory(
-            "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=PaymentSystem;",
-            "java",
-            "java123"
-    );
-
-    ClientDao<Integer> clientDao = new ClientDaoImpl(connectionFactory);
-    ClientService<Integer> clientService = new ClientService<Integer>(clientDao);
+    ClientDao<Integer> clientDao;
+    ClientService<Integer> clientService;
 
     @BeforeClass
     public void beforeClass() {
-        System.out.println("@BeforeClass");
+        clientDao = new ClientDaoImpl(TestSettings.connectionFactory);
+        clientService = new ClientService<Integer>(clientDao);
     }
 
     @Test
