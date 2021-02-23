@@ -1,0 +1,5 @@
+CREATE DATABASE PaymentSystem;
+GO
+
+CREATE USER [java] FOR LOGIN [java]
+GO
