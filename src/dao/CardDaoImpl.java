@@ -49,7 +49,36 @@ public class CardDaoImpl implements CardDao<Integer> {
     }
 
     @Override
-    public void create(Card<Integer> card) throws SQLException {
+    public List<Card<Integer>> findByAccount(Account account) throws SQLException {
+        List<Card<Integer>> result = new LinkedList<>();
+        final Connection con = connectionFactory.getConnection();
+        final String sql = "SELECT c.id, c.accountId, c.card_number, c.owner_name, c.cvv, c.exp_year, c.exp_month FROM Cards c\n" +
+                "WHERE c.accountId = ?";
+        try {
+            PreparedStatement pstm = con.prepareStatement(sql);
+            pstm.setInt(1, (Integer) account.getId());
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                result.add(new Card<Integer>(
+                        rs.getInt("id"),
+                        rs.getInt("accountId"),
+                        rs.getShort("card_number"),
+                        rs.getString("owner_name"),
+                        rs.getShort("cvv"),
+                        rs.getShort("exp_year"),
+                        rs.getShort("exp_month")
+                ));
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public void create(Card card) throws SQLException {
         String sql = "INSERT INTO Cards(accountId,card_number,owner_name,cvv,exp_year,exp_month) VALUES(?,?,?,?,?,?)";
 
 

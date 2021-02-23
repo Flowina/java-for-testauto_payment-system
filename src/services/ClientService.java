@@ -30,12 +30,33 @@ public class ClientService<Tid> {
         }
     }
 
+    public void delete (Tid clientId) throws Exception {
+        try {
+            Client client = dao.findById(clientId);
+            if (client == null) {
+                throw new Exception("Client not found (id = " + clientId + ")");
+            }
+            dao.delete(client);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void delete (Client client) {
         try {
             dao.delete(client);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Client findById(Tid id) {
+        try {
+            return dao.findById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<Client> findByName(String name) {
@@ -45,6 +66,15 @@ public class ClientService<Tid> {
 
         try {
             return dao.findByName(name);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<Client>(0);
+    }
+
+    public List<Client> getAll() {
+         try {
+            return dao.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -31,6 +31,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
                 result.add(new Account(
                         rs.getInt("id"),
                         rs.getInt("clientId"),
+                        rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
                         rs.getDate("opening_date"),
@@ -104,6 +105,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
                 result.add(new Account(
                         rs.getInt("id"),
                         rs.getInt("clientId"),
+                        rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
                         rs.getDate("opening_date"),
@@ -137,6 +139,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
                 return new Account(
                         rs.getInt("id"),
                         rs.getInt("clientId"),
+                        rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
                         rs.getDate("opening_date"),
@@ -153,7 +156,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public void update(Account account) throws SQLException {
+    public void update(Account<Integer> account) throws SQLException {
 
         final Connection con = connectionFactory.getConnection();
         try {
@@ -174,7 +177,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
             pstm.setDate(6, account.getClosingDate() == null
                     ? null
                     : new java.sql.Date(account.getClosingDate().getTime()));
-
+            pstm.setInt(7, account.getId());
             int affectedRows = pstm.executeUpdate();
 
             con.close();

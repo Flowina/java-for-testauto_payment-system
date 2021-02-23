@@ -37,7 +37,8 @@ public class Account<Tid> {
 
     @Override
     public String toString() {
-        return getNumber() + ": " + getAmount() + ", opened: " + getOpeningDate() + ", closed: " + getClosingDate();
+        return "id = " + getId() + ": number = " + getNumber() + ": $" + getAmount() +
+                ", opened: " + getOpeningDate() + ", closed: " + getClosingDate();
     }
 
     public Tid getId() {

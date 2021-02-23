@@ -20,17 +20,18 @@ public class ClientDaoImpl implements ClientDao<Integer> {
     public void create(Client client) throws SQLException {
         final Connection con = connectionFactory.getConnection();
         try {
-            final Statement stm = con.createStatement();
+            String sql = "INSERT INTO clients (lastName, firstName, dateOfBirth) VALUES (?, ?, ?) ";
 
-            String query = "INSERT INTO clients " +
-                    "(lastName, firstName, dateOfBirth) " +
-                    "VALUES ('" + client.getLastName() + "','" + client.getFirstName() + "','" + client.getDateOfBirth() + "') ";
+            PreparedStatement pstm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            pstm.setString(1, client.getLastName());
+            pstm.setString(2, client.getFirstName());
+            pstm.setDate(3, new java.sql.Date(client.getDateOfBirth().getTime()));
 
-            int affectedRows = stm.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            int affectedRows = pstm.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating user failed, no rows affected.");
             }
-            try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = pstm.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     client.setId(generatedKeys.getInt(1));
                 }

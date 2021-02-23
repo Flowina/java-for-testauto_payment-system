@@ -2,6 +2,7 @@ package services;
 
 import dao.AccountDao;
 import entities.Account;
+import entities.Client;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class AccountService<Tid>  {
         }
     }
 
-    public List<Account> getAll () {
+    public List<Account<Tid>> getAll () {
         try {
            return dao.getAll();
         } catch (SQLException e) {
@@ -52,10 +53,19 @@ public class AccountService<Tid>  {
         }
     }
 
+    public Account<Tid> findById(Tid id) {
+        try {
+            return dao.findById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void increaseBallance(Tid accountId, double value) throws Exception {
         try {
             Account accountDB = dao.findById(accountId);
-            if (accountDB.getClosingDate().before(new Date())) {
+            if (accountDB.getClosingDate() != null && accountDB.getClosingDate().before(new Date())) {
                 throw new Exception("Can't increase closed account");
             }
             accountDB.setAmount(accountDB.getAmount() + value);
@@ -68,7 +78,7 @@ public class AccountService<Tid>  {
     public void decreaseBallance(Tid accountId, double value) throws Exception {
         try {
             Account accountDB = dao.findById(accountId);
-            if (accountDB.getClosingDate().before(new Date())) {
+            if (accountDB.getClosingDate() != null && accountDB.getClosingDate().before(new Date())) {
                 throw new Exception("Can't increase closed account");
             }
             double newValue = accountDB.getAmount() - value;
@@ -82,5 +92,14 @@ public class AccountService<Tid>  {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Account> findByClient(Client client) {
+        try {
+            return dao.findByClient(client);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new LinkedList<>();
     }
 }

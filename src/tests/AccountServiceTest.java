@@ -29,7 +29,7 @@ public class AccountServiceTest {
 
     @Test
     public void account_getAll__should_return_all_accounts() {
-        List<Account> accounts = accountService.getAll();
+        List<Account<Integer>> accounts = accountService.getAll();
         Assert.assertTrue(true);
     }
 

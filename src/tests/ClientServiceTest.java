@@ -44,3 +44,37 @@ public class ClientServiceTest {
         Assert.assertTrue(true);
     }
 }
+/*
+try {
+            Client newClient = new Client("Lara", "Croft", Date.valueOf("1959-02-14"));
+            clientService.create(newClient);
+            clients = clientDao.getAll();
+            for (Client c:
+                    clients) {
+                System.out.println(c);
+            }
+
+            Client client = clientDao.findById(newClient.getId());
+            System.out.println(client);
+
+            List<Client> clientsByName = clientService.findByName("ro");
+            for (Client c:
+                    clientsByName) {
+                System.out.println(c);
+            }
+
+            client.setLastName("foo");
+            clientService.update(client);
+            System.out.println(client);
+
+            clientService.delete(client);
+
+            clients = clientDao.getAll();
+            for (Client c:
+                    clients) {
+                System.out.println(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+ */
