@@ -4,8 +4,9 @@
     <test name="ClientServiceTest" >
         <classes>
             <class name="tests.TestSettings" />
-            <!--class name="tests.ClientServiceTest" /-->
-            <class name="tests.AccountServiceTest" />
+            <class name="tests.ClientDaoTest" />
+            <class name="tests.ClientServiceTest" />
+            <!--class name="tests.AccountServiceTest" /-->
         </classes>
     </test>
 
