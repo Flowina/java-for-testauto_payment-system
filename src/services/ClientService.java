@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientService<Tid> {
-    private ClientDao<Tid> dao;
+public class ClientService {
+    private ClientDao dao;
 
-    public ClientService(ClientDao<Tid> dao) {
+    public ClientService(ClientDao dao) {
         this.dao = dao;
     }
 
@@ -30,7 +30,7 @@ public class ClientService<Tid> {
         }
     }
 
-    public void delete (Tid clientId) throws Exception {
+    public void delete (long clientId) throws Exception {
         try {
             Client client = dao.findById(clientId);
             if (client == null) {
@@ -50,7 +50,7 @@ public class ClientService<Tid> {
         }
     }
 
-    public Client findById(Tid id) {
+    public Client findById(long id) {
         try {
             return dao.findById(id);
         } catch (SQLException e) {

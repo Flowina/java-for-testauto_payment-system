@@ -7,9 +7,9 @@ import entities.Client;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CardDao<Tid> extends CrudDao<Card<Tid>, Tid> {
-    List<Card<Tid>> findByClient(Client client) throws SQLException;
-    List<Card<Tid>> findByAccount(Account account) throws SQLException;
+public interface CardDao extends CrudDao<Card> {
+    List<Card> findByClient(Client client) throws SQLException;
+    List<Card> findByAccount(Account account) throws SQLException;
 }
 
 

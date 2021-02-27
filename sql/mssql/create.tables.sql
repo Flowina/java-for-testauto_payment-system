@@ -1,6 +1,6 @@
 CREATE TABLE Accounts(
-	id int IDENTITY(1,1) NOT NULL,
-	clientId int NOT NULL,
+	id bigint IDENTITY(1,1) NOT NULL,
+	clientId bigint NOT NULL,
 	number int NOT NULL,
 	type smallint NOT NULL,
 	amount decimal(10, 2) NOT NULL,
@@ -10,9 +10,9 @@ CREATE TABLE Accounts(
 ALTER TABLE Accounts ADD PRIMARY KEY (id);
 
 CREATE TABLE Cards(
-	id int IDENTITY(1,1) NOT NULL,
-	accountId int NOT NULL,
-	card_number int NOT NULL,
+	id bigint IDENTITY(1,1) NOT NULL,
+	accountId bigint NOT NULL,
+	card_number bigint NOT NULL,
 	owner_name varchar(510) NOT NULL,
 	cvv smallint NOT NULL,
 	exp_year numeric(4, 0) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE Cards(
 ALTER TABLE Cards ADD PRIMARY KEY (id);
 
 CREATE TABLE Clients(
-	id int IDENTITY(1,1) NOT NULL,
+	id bigint IDENTITY(1,1) NOT NULL,
 	lastName nvarchar(255) NOT NULL,
 	firstName nvarchar(255) NOT NULL,
 	dateOfBirth date NOT NULL);

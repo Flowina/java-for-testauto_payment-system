@@ -12,8 +12,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class ClientServiceTest {
-    ClientDao<Integer> clientDao;
-    ClientService<Integer> clientService;
+    ClientDao clientDao;
+    ClientService clientService;
 
     Client[] clients = {
             new Client("Manning", "Victoria", Date.valueOf("1980-02-14")),
@@ -26,7 +26,7 @@ public class ClientServiceTest {
     @BeforeClass
     public void beforeClass() {
         clientDao = new ClientDaoImpl(TestSettings.connectionFactory);
-        clientService = new ClientService<Integer>(clientDao);
+        clientService = new ClientService(clientDao);
     }
 
     @Test(priority=1)
@@ -35,7 +35,7 @@ public class ClientServiceTest {
             clients) {
             clientService.create(newClient);
             try {
-                Client client = clientDao.findById(newClient.getId());
+                Client client = clientDao.findById(newClient.getId().get());
                 Assert.assertNotNull(client);
             } catch (SQLException e) {
                 Assert.fail("Error creating new client", e);
@@ -56,7 +56,7 @@ public class ClientServiceTest {
             existClient.setLastName(newName);
             clientService.update(existClient);
 
-            Client client = clientDao.findById(existClient.getId());
+            Client client = clientDao.findById(existClient.getId().get());
             Assert.assertNotNull(client);
             Assert.assertEquals(client.getLastName(), newName, "Expected name = " + newName);
         }

@@ -6,10 +6,12 @@ import entities.Client;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AccountDaoImpl implements AccountDao<Integer> {
+public class AccountDaoImpl implements AccountDao {
     private ConnectionFactory connectionFactory;
 
     public AccountDaoImpl(ConnectionFactory connectionFactory) {
@@ -20,7 +22,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     public List<Account> findByClient(Client client) throws SQLException {
         List<Account> result = new LinkedList<>();
         final Connection con = connectionFactory.getConnection();
-        final String sql = "SELECT * FROM accounts WHERE clientId = " + client.getId();
+        final String sql = "SELECT * FROM accounts WHERE clientId = " + client.getId().get();
         try {
             //TODO: use preparedstatement
             final Statement stm = con.createStatement();
@@ -29,8 +31,8 @@ public class AccountDaoImpl implements AccountDao<Integer> {
 
             while (rs.next()) {
                 result.add(new Account(
-                        rs.getInt("id"),
-                        rs.getInt("clientId"),
+                        Optional.of(rs.getLong("id")),
+                        rs.getLong("clientId"),
                         rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
@@ -62,7 +64,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
         final Connection con = connectionFactory.getConnection();
         try {
             PreparedStatement pstm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            pstm.setInt(1, account.getClientId());
+            pstm.setLong(1, account.getClientId());
             pstm.setInt(2, account.getNumber());
             pstm.setShort(3, account.getType());
             pstm.setDouble(4, account.getAmount());
@@ -77,7 +79,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
             }
             try (ResultSet generatedKeys = pstm.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    account.setId(generatedKeys.getInt(1));
+                    account.setId(Optional.of(generatedKeys.getLong(1)));
                 } else {
                     throw new SQLException("Creating account failed, no ID obtained.");
                 }
@@ -94,8 +96,8 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public List<Account<Integer>> getAll() throws SQLException {
-        List<Account<Integer>> result = new LinkedList<>();
+    public List<Account> getAll() throws SQLException {
+        List<Account> result = new LinkedList<>();
         final String sql = "SELECT * FROM accounts;";
         final Connection con = connectionFactory.getConnection();
         try (Statement stm = con.createStatement();
@@ -103,8 +105,8 @@ public class AccountDaoImpl implements AccountDao<Integer> {
             while (rs.next()) {
                 //public Account(int id, int clientId, int number, short type, double amount, Date openingDate, Date closingDate)
                 result.add(new Account(
-                        rs.getInt("id"),
-                        rs.getInt("clientId"),
+                        Optional.of(rs.getLong("id")),
+                        rs.getLong("clientId"),
                         rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
@@ -125,7 +127,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public Account findById(Integer id) throws SQLException {
+    public Account findById(long id) throws SQLException {
 
         final Connection con = connectionFactory.getConnection();
         final String sql = "SELECT * FROM accounts WHERE id = " + id;
@@ -137,8 +139,8 @@ public class AccountDaoImpl implements AccountDao<Integer> {
 
             while (rs.next()) {
                 return new Account(
-                        rs.getInt("id"),
-                        rs.getInt("clientId"),
+                        Optional.of(rs.getLong("id")),
+                        rs.getLong("clientId"),
                         rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
@@ -156,7 +158,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public void update(Account<Integer> account) throws SQLException {
+    public void update(Account account) throws SQLException {
 
         final Connection con = connectionFactory.getConnection();
         try {
@@ -169,7 +171,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
                     "      ,closing_date = ?\n" +
                     " WHERE id = ?";
             PreparedStatement pstm = con.prepareStatement(sql);
-            pstm.setInt(1, account.getClientId());
+            pstm.setLong(1, account.getClientId());
             pstm.setInt(2, account.getNumber());
             pstm.setShort(3, account.getType());
             pstm.setDouble(4, account.getAmount());
@@ -177,7 +179,7 @@ public class AccountDaoImpl implements AccountDao<Integer> {
             pstm.setDate(6, account.getClosingDate() == null
                     ? null
                     : new java.sql.Date(account.getClosingDate().getTime()));
-            pstm.setInt(7, account.getId());
+            pstm.setLong(7, account.getId().get());
             int affectedRows = pstm.executeUpdate();
 
             con.close();
@@ -187,12 +189,12 @@ public class AccountDaoImpl implements AccountDao<Integer> {
     }
 
     @Override
-    public void delete(Account<Integer> account) throws SQLException {
+    public void delete(Account account) throws SQLException {
         final Connection con = connectionFactory.getConnection();
         try {
             String sql = "DELETE FROM accounts WHERE id=? ;";
             PreparedStatement pstm = con.prepareStatement(sql);
-            pstm.setInt(7, account.getId());
+            pstm.setLong(7, account.getId().get());
 
             pstm.executeUpdate();
             con.close();

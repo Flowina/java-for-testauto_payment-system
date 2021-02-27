@@ -9,7 +9,7 @@ import services.ClientService;
 import java.sql.SQLException;
 
 public class ClientDaoTest {
-    private ClientDao<Integer> clientDao;
+    private ClientDao clientDao;
 
     @BeforeClass
     public void beforeClass() {
