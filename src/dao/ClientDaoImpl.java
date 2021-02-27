@@ -19,8 +19,7 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public void create(Client client) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             String sql = "INSERT INTO clients (lastName, firstName, dateOfBirth) VALUES (?, ?, ?) ";
 
             PreparedStatement pstm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -40,14 +39,6 @@ public class ClientDaoImpl implements ClientDao {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ClientDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -102,31 +93,29 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public void update(Client client) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
-        try {
-            final Statement stm = con.createStatement();
-            String query = "UPDATE clients SET " +
-                    "lastName='" + client.getLastName()+ "'," +
-                    "firstName='" + client.getFirstName() + "'," +
-                    "dateOfBirth='" + client.getDateOfBirth() + "'  " +
-                    "WHERE id=" + client.getId().get() + " ;";
-            stm.executeUpdate(query);
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection con = connectionFactory.getConnection()) {
+            String sql = "UPDATE clients SET " +
+                    "lastName=?," +
+                    "firstName=?," +
+                    "dateOfBirth=?" +
+                    " WHERE id=?;";
+
+            PreparedStatement pstm = con.prepareStatement(sql);
+            pstm.setString(1, client.getLastName());
+            pstm.setString(2, client.getFirstName());
+            pstm.setDate(3, new java.sql.Date(client.getDateOfBirth().getTime()));
+            pstm.setLong(4, client.getId().get());
+
+            pstm.executeUpdate();
         }
     }
 
     @Override
     public void delete(Client client) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try(Connection con = connectionFactory.getConnection()) {
             final Statement stm = con.createStatement();
             String query = "DELETE FROM clients WHERE id=" + client.getId().get() + " ;";
             stm.executeUpdate(query);
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 

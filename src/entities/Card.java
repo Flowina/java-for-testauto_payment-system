@@ -12,7 +12,7 @@ public class Card {
     private short expMonth;
 
     public Card(long accountId, long cardNumber, String ownerName, short cvv, short expYear, short expMonth) {
-        this(null, accountId, cardNumber, ownerName, cvv, expYear, expMonth);
+        this(Optional.empty(), accountId, cardNumber, ownerName, cvv, expYear, expMonth);
     }
 
     public Card(Optional<Long> id, long accountId, long cardNumber, String ownerName, short cvv, short expYear, short expMonth) {
@@ -28,7 +28,7 @@ public class Card {
     @Override
     public String toString() {
         return "Card{" +
-                "id=" + id.get() +
+                "id=" + (id.isPresent() ? id.get() : "null") +
                 ", accountId=" + accountId +
                 ", cardNumber=" + cardNumber +
                 ", ownerName='" + ownerName + '\'' +

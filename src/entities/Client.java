@@ -17,12 +17,12 @@ public class Client {
     }
 
     public Client(String lastName, String firstName, Date dateOfBirth) {
-        this(null, lastName, firstName, dateOfBirth);
+        this(Optional.empty(), lastName, firstName, dateOfBirth);
     }
 
     @Override
     public String toString() {
-        return getId().get() + " " + getLastName() + " " + getFirstName() + " " + getDateOfBirth();
+        return (id.isPresent() ? id.get() : "null") + ": " + getLastName() + " " + getFirstName() + " " + getDateOfBirth();
     }
 
     public Optional<Long> getId() {

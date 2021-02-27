@@ -1,4 +1,4 @@
-package tests;
+package tests.services;
 
 import dao.*;
 import entities.Account;
@@ -6,6 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import services.AccountService;
 import services.ClientService;
+import tests.TestSettings;
 
 import java.util.Date;
 import java.util.List;

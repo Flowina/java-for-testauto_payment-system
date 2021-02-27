@@ -23,7 +23,7 @@ public class Account {
     private Date closingDate;
 
     public Account(long clientId, int number, short type, double amount, Date openingDate, Date closingDate) {
-        this(null, clientId, number, type, amount, openingDate, closingDate);
+        this(Optional.empty(), clientId, number, type, amount, openingDate, closingDate);
     }
 
     public Account(Optional<Long> id, long clientId, int number, short type, double amount, Date openingDate, Date closingDate) {
@@ -38,7 +38,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "id = " + getId().get() + ": number = " + getNumber() + ": $" + getAmount() +
+        return "id = " + (id.isPresent() ? id.get() : "null") + ": number = " + getNumber() + ": $" + getAmount() +
                 ", opened: " + getOpeningDate() + ", closed: " + getClosingDate();
     }
 

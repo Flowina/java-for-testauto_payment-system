@@ -1,4 +1,4 @@
-package tests;
+package tests.services;
 import dao.ClientDao;
 import dao.ClientDaoImpl;
 import dao.ConnectionFactory;
@@ -7,6 +7,7 @@ import entities.Client;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import services.ClientService;
+import tests.TestSettings;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -14,14 +15,6 @@ import java.sql.SQLException;
 public class ClientServiceTest {
     ClientDao clientDao;
     ClientService clientService;
-
-    Client[] clients = {
-            new Client("Manning", "Victoria", Date.valueOf("1980-02-14")),
-            new Client("Rampling", "Cameron", Date.valueOf("1959-02-14")),
-            new Client("Davidson", "Audrey", Date.valueOf("1959-02-14")),
-            new Client("Lawrence", "Benjamin", Date.valueOf("2000-02-14")),
-            new Client("James", "Fiona", Date.valueOf("1999-02-14")),
-    };
 
     @BeforeClass
     public void beforeClass() {
@@ -32,7 +25,7 @@ public class ClientServiceTest {
     @Test(priority=1)
     public void client_create__should_create_new_client() {
         for (Client newClient:
-            clients) {
+                TestSettings.clients) {
             clientService.create(newClient);
             try {
                 Client client = clientDao.findById(newClient.getId().get());
@@ -51,7 +44,7 @@ public class ClientServiceTest {
     @Test(dependsOnMethods = {"client_create__should_create_new_client",})
     public void testUpdate_should_update_user() throws SQLException {
         for (Client existClient:
-                clients) {
+                TestSettings.clients) {
             String newName = existClient.getLastName() + " Jr.";
             existClient.setLastName(newName);
             clientService.update(existClient);
