@@ -1,21 +1,21 @@
 package entities;
 
-import java.util.Date;
+import java.util.Optional;
 
-public class Card<Tid> {
-    private Tid id;
-    private int accountId;
-    private int cardNumber;
+public class Card {
+    private Optional<Long> id;
+    private long accountId;
+    private long cardNumber;
     private String ownerName;
     private short cvv;
     private short expYear;
     private short expMonth;
 
-    public Card(int accountId, int cardNumber, String ownerName, short cvv, short expYear, short expMonth) {
+    public Card(long accountId, long cardNumber, String ownerName, short cvv, short expYear, short expMonth) {
         this(null, accountId, cardNumber, ownerName, cvv, expYear, expMonth);
     }
 
-    public Card(Tid id, int accountId, int cardNumber, String ownerName, short cvv, short expYear, short expMonth) {
+    public Card(Optional<Long> id, long accountId, long cardNumber, String ownerName, short cvv, short expYear, short expMonth) {
         this.id = id;
         this.accountId = accountId;
         this.cardNumber = cardNumber;
@@ -28,7 +28,7 @@ public class Card<Tid> {
     @Override
     public String toString() {
         return "Card{" +
-                "id=" + id +
+                "id=" + id.get() +
                 ", accountId=" + accountId +
                 ", cardNumber=" + cardNumber +
                 ", ownerName='" + ownerName + '\'' +
@@ -38,15 +38,15 @@ public class Card<Tid> {
                 '}';
     }
 
-    public Tid getId() {
+    public Optional<Long> getId() {
         return id;
     }
 
-    public void setId(Tid id) {
+    public void setId(Optional<Long> id) {
         this.id = id;
     }
 
-    public int getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 
@@ -54,7 +54,7 @@ public class Card<Tid> {
         this.accountId = accountId;
     }
 
-    public int getCardNumber() {
+    public long getCardNumber() {
         return cardNumber;
     }
 

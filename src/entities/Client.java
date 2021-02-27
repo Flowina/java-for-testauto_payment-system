@@ -1,14 +1,15 @@
 package entities;
 
 import java.util.Date;
+import java.util.Optional;
 
 public class Client {
-    private int id;
+    private Optional<Long> id;
     private String lastName;
     private String firstName;
     private Date dateOfBirth;
 
-    public Client(int id, String lastName, String firstName, Date dateOfBirth) {
+    public Client(Optional<Long> id, String lastName, String firstName, Date dateOfBirth) {
         this.setId(id);
         this.setLastName(lastName);
         this.setFirstName(firstName);
@@ -16,19 +17,19 @@ public class Client {
     }
 
     public Client(String lastName, String firstName, Date dateOfBirth) {
-        this(0, lastName, firstName, dateOfBirth);
+        this(null, lastName, firstName, dateOfBirth);
     }
 
     @Override
     public String toString() {
-        return getId() + " " + getLastName() + " " + getFirstName() + " " + getDateOfBirth();
+        return getId().get() + " " + getLastName() + " " + getFirstName() + " " + getDateOfBirth();
     }
 
-    public int getId() {
+    public Optional<Long> getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Optional<Long> id) {
         this.id = id;
     }
 

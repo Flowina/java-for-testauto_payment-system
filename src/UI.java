@@ -11,19 +11,19 @@ import java.util.Date;
 import java.util.List;
 
 public class UI {
-    private final ClientService<Integer> clientService;
-    private final AccountService<Integer> accountService;
-    private final CardService<Integer> cardService;
+    private final ClientService clientService;
+    private final AccountService accountService;
+    private final CardService cardService;
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public UI(ConnectionFactory connectionFactory) {
-        ClientDao<Integer> clientDao = new ClientDaoImpl(connectionFactory);
-        AccountDao<Integer> accountDao = new AccountDaoImpl(connectionFactory);
-        CardDao<Integer> cardDao = new CardDaoImpl(connectionFactory);
-        clientService = new ClientService<>(clientDao);
-        accountService = new AccountService<>(accountDao);
-        cardService = new CardService<>(cardDao);
+        ClientDao clientDao = new ClientDaoImpl(connectionFactory);
+        AccountDao accountDao = new AccountDaoImpl(connectionFactory);
+        CardDao cardDao = new CardDaoImpl(connectionFactory);
+        clientService = new ClientService(clientDao);
+        accountService = new AccountService(accountDao);
+        cardService = new CardService(cardDao);
     }
 
     public void run() throws Exception {
@@ -240,7 +240,7 @@ public class UI {
 
     }
 
-    private void editAccountCardsActions(Account<Integer> account) throws Exception {
+    private void editAccountCardsActions(Account account) throws Exception {
         String action = "";
         Card card = null;
 
@@ -293,7 +293,7 @@ public class UI {
 
     private void viewCards(Account account) {
         showLoader();
-        List<Card<Integer>> cards = cardService.findByAccount(account);
+        List<Card> cards = cardService.findByAccount(account);
         hideLoader();
         if (cards.size() == 0) {
             System.out.println("There are no cards");
@@ -315,11 +315,11 @@ public class UI {
         System.out.println("\n");
     }
 
-    private Card addCard(Account<Integer> account) throws IOException {
+    private Card addCard(Account account) throws IOException {
         System.out.println("------------------------------------------------");
         System.out.println("Enter card number:");
         System.out.println("------------------------------------------------");
-        Integer number = Integer.valueOf(br.readLine());
+        long number = Long.valueOf(br.readLine());
         System.out.println("------------------------------------------------");
         System.out.println("Enter owner name");
         System.out.println("------------------------------------------------");
@@ -337,7 +337,7 @@ public class UI {
         System.out.println("------------------------------------------------");
         Short year = Short.parseShort(br.readLine());
 
-        Card card = new Card(account.getId(), number, name, cvv, year, month );
+        Card card = new Card(account.getId().get(), number, name, cvv, year, month );
 
         showLoader();
         cardService.create(card);
@@ -468,7 +468,7 @@ public class UI {
         System.out.println("------------------------------------------------");
         short type = Short.parseShort(br.readLine());
 
-        Account acc = new Account(client.getId(), number, type, 0, new Date(), null );
+        Account acc = new Account(client.getId().get(), number, type, 0, new Date(), null );
 
         showLoader();
         accountService.create(acc);
@@ -506,23 +506,23 @@ public class UI {
         }
     }
 
-    private void increaseAccountAmount(Account<Integer> acc) throws Exception {
+    private void increaseAccountAmount(Account acc) throws Exception {
         System.out.println("------------------------------------------------");
         System.out.println("Enter value:");
         System.out.println("------------------------------------------------");
         double value = Double.parseDouble(br.readLine());
         showLoader();
-        accountService.increaseBallance(acc.getId(), value);
+        accountService.increaseBallance(acc.getId().get(), value);
         hideLoader();
     }
 
-    private void decreaseAccountAmount(Account<Integer> acc) throws Exception {
+    private void decreaseAccountAmount(Account acc) throws Exception {
         System.out.println("------------------------------------------------");
         System.out.println("Enter value:");
         System.out.println("------------------------------------------------");
         double value = Double.parseDouble(br.readLine());
         showLoader();
-        accountService.decreaseBallance(acc.getId(), value);
+        accountService.decreaseBallance(acc.getId().get(), value);
         hideLoader();
     }
 

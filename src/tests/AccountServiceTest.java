@@ -12,12 +12,12 @@ import java.util.List;
 
 public class AccountServiceTest {
     AccountDaoImpl accountDao;
-    AccountService<Integer> accountService;
+    AccountService accountService;
 
     @BeforeClass
     public void beforeClass() {
         accountDao = new AccountDaoImpl(TestSettings.connectionFactory);
-        accountService = new AccountService<Integer>(accountDao);
+        accountService = new AccountService(accountDao);
     }
 
     /*@Test
@@ -29,7 +29,7 @@ public class AccountServiceTest {
 
     @Test
     public void account_getAll__should_return_all_accounts() {
-        List<Account<Integer>> accounts = accountService.getAll();
+        List<Account> accounts = accountService.getAll();
         Assert.assertTrue(true);
     }
 

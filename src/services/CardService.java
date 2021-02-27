@@ -9,14 +9,14 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CardService<Tid> {
-    private CardDao<Tid> dao;
+public class CardService {
+    private CardDao dao;
 
-    public CardService(CardDao<Tid> dao) {
+    public CardService(CardDao dao) {
         this.dao = dao;
     }
 
-    public void create (Card<Tid> card) {
+    public void create (Card card) {
         try {
             dao.create(card);
         } catch (SQLException e) {
@@ -24,7 +24,7 @@ public class CardService<Tid> {
         }
     }
 
-    public List<Card<Tid>> findByAccount(Account account) {
+    public List<Card> findByAccount(Account account) {
         try {
             return dao.findByAccount(account);
         } catch (SQLException e) {
@@ -33,7 +33,7 @@ public class CardService<Tid> {
         return new LinkedList<>();
     }
 
-    public List<Card<Tid>> findByClient(Client client) {
+    public List<Card> findByClient(Client client) {
         try {
             return dao.findByClient(client);
         } catch (SQLException e) {
@@ -50,7 +50,7 @@ public class CardService<Tid> {
         }
     }
 
-    public Card findById(Tid id) {
+    public Card findById(long id) {
         try {
             return dao.findById(id);
         } catch (SQLException e) {

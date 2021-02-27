@@ -1,8 +1,9 @@
 package entities;
 
 import java.util.Date;
+import java.util.Optional;
 
-public class Account<Tid> {
+public class Account {
     /*
     CREATE TABLE [dbo].[Accounts](
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -13,19 +14,19 @@ public class Account<Tid> {
 	[opening_date] [datetime2](0) NOT NULL,
 	[closing_date] [datetime2](0) NULL,,*/
 
-    private Tid id;
-    private int clientId;
+    private Optional<Long> id;
+    private long clientId;
     private int number;
     private short type;
     private double amount;
     private Date openingDate;
     private Date closingDate;
 
-    public Account(int clientId, int number, short type, double amount, Date openingDate, Date closingDate) {
+    public Account(long clientId, int number, short type, double amount, Date openingDate, Date closingDate) {
         this(null, clientId, number, type, amount, openingDate, closingDate);
     }
 
-    public Account(Tid id, int clientId, int number, short type, double amount, Date openingDate, Date closingDate) {
+    public Account(Optional<Long> id, long clientId, int number, short type, double amount, Date openingDate, Date closingDate) {
         this.id = id;
         this.clientId = clientId;
         this.number = number;
@@ -37,19 +38,19 @@ public class Account<Tid> {
 
     @Override
     public String toString() {
-        return "id = " + getId() + ": number = " + getNumber() + ": $" + getAmount() +
+        return "id = " + getId().get() + ": number = " + getNumber() + ": $" + getAmount() +
                 ", opened: " + getOpeningDate() + ", closed: " + getClosingDate();
     }
 
-    public Tid getId() {
+    public Optional<Long> getId() {
         return id;
     }
 
-    public void setId(Tid id) {
+    public void setId(Optional<Long> id) {
         this.id = id;
     }
 
-    public int getClientId() {
+    public long getClientId() {
         return clientId;
     }
 

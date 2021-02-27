@@ -1,5 +1,6 @@
 package dao;
 
+import dao.utils.DaoUtils;
 import entities.Client;
 
 import java.sql.*;
@@ -9,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //TODO: Close all connections and statements
-public class ClientDaoImpl implements ClientDao<Integer> {
+public class ClientDaoImpl implements ClientDao {
     private ConnectionFactory connectionFactory;
 
     public ClientDaoImpl(ConnectionFactory connectionFactory) {
@@ -33,7 +34,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
             }
             try (ResultSet generatedKeys = pstm.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    client.setId(generatedKeys.getInt(1));
+                    client.setId(DaoUtils.GetKey(generatedKeys, 1));
                 }
                 else {
                     throw new SQLException("Creating user failed, no ID obtained.");
@@ -59,7 +60,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
              ResultSet rs = stm.executeQuery(sql)) {
             while (rs.next()) {
                 result.add(new Client(
-                        rs.getInt("id"),
+                        DaoUtils.GetKey(rs, "id"),
                         rs.getString("lastName"),
                         rs.getString("firstName"),
                         rs.getDate("dateOfBirth")));
@@ -76,7 +77,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
     }
 
     @Override
-    public Client findById(Integer id) throws SQLException {
+    public Client findById(long id) throws SQLException {
         final Connection con = connectionFactory.getConnection();
         final String sql = "SELECT * FROM clients WHERE id = " + id;
         try {
@@ -87,7 +88,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
 
             while (rs.next()) {
                 return new Client(
-                        rs.getInt("id"),
+                        DaoUtils.GetKey(rs, "id"),
                         rs.getString("lastName"),
                         rs.getString("firstName"),
                         rs.getDate("dateOfBirth"));
@@ -108,7 +109,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
                     "lastName='" + client.getLastName()+ "'," +
                     "firstName='" + client.getFirstName() + "'," +
                     "dateOfBirth='" + client.getDateOfBirth() + "'  " +
-                    "WHERE id=" + client.getId() + " ;";
+                    "WHERE id=" + client.getId().get() + " ;";
             stm.executeUpdate(query);
             con.close();
         } catch (SQLException e) {
@@ -121,7 +122,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
         final Connection con = connectionFactory.getConnection();
         try {
             final Statement stm = con.createStatement();
-            String query = "DELETE FROM clients WHERE id=" + client.getId() + " ;";
+            String query = "DELETE FROM clients WHERE id=" + client.getId().get() + " ;";
             stm.executeUpdate(query);
             con.close();
         } catch (SQLException e) {
@@ -142,7 +143,7 @@ public class ClientDaoImpl implements ClientDao<Integer> {
 
             while (rs.next()) {
                 result.add(new Client(
-                        rs.getInt("id"),
+                        DaoUtils.GetKey(rs, "id"),
                         rs.getString("lastName"),
                         rs.getString("firstName"),
                         rs.getDate("dateOfBirth")));
