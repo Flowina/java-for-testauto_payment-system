@@ -79,7 +79,7 @@ public class AccountService  {
         try {
             Account accountDB = dao.findById(accountId);
             if (accountDB.getClosingDate() != null && accountDB.getClosingDate().before(new Date())) {
-                throw new Exception("Can't increase closed account");
+                throw new Exception("Can't decrease closed account");
             }
             double newValue = accountDB.getAmount() - value;
 

@@ -16,6 +16,11 @@ public class ClientServiceTest {
     ClientDao clientDao;
     ClientService clientService;
 
+    Client[] clients = {
+            new Client("Mouse", "Mikkey", Date.valueOf("1980-02-14")),
+            new Client("Duck", "Donald", Date.valueOf("1959-02-14"))
+    };
+
     @BeforeClass
     public void beforeClass() {
         clientDao = new ClientDaoImpl(TestSettings.connectionFactory);
@@ -25,7 +30,7 @@ public class ClientServiceTest {
     @Test(priority=1)
     public void client_create__should_create_new_client() {
         for (Client newClient:
-                TestSettings.clients) {
+                clients) {
             clientService.create(newClient);
             try {
                 Client client = clientDao.findById(newClient.getId().get());
@@ -37,75 +42,27 @@ public class ClientServiceTest {
     }
 
 
-    @Test
-    public void testCreate() {
-    }
-
     @Test(dependsOnMethods = {"client_create__should_create_new_client",})
-    public void testUpdate_should_update_user() throws SQLException {
+    public void testUpdate_should_update_clients() throws SQLException {
         for (Client existClient:
-                TestSettings.clients) {
+                clients) {
             String newName = existClient.getLastName() + " Jr.";
             existClient.setLastName(newName);
             clientService.update(existClient);
 
-            Client client = clientDao.findById(existClient.getId().get());
+            Client client = clientService.findById(existClient.getId().get());
             Assert.assertNotNull(client);
             Assert.assertEquals(client.getLastName(), newName, "Expected name = " + newName);
         }
     }
 
-    @Test
-    public void testDelete() {
-    }
+    @Test(dependsOnMethods = {"testUpdate_should_update_clients",})
+    public void testDelete__should_delete_clients() throws SQLException {
+        for (Client existClient:
+                clients) {
 
-    @Test
-    public void testTestDelete() {
-    }
-
-    @Test
-    public void testFindById() {
-    }
-
-    @Test
-    public void testFindByName() {
-    }
-
-    @Test
-    public void testGetAll() {
+            clientService.delete(existClient);
+        }
+        Assert.assertTrue(clientService.getAll().size() == 0);
     }
 }
-/*
-try {
-            Client newClient = new Client("Lara", "Croft", Date.valueOf("1959-02-14"));
-            clientService.create(newClient);
-            clients = clientDao.getAll();
-            for (Client c:
-                    clients) {
-                System.out.println(c);
-            }
-
-            Client client = clientDao.findById(newClient.getId());
-            System.out.println(client);
-
-            List<Client> clientsByName = clientService.findByName("ro");
-            for (Client c:
-                    clientsByName) {
-                System.out.println(c);
-            }
-
-            client.setLastName("foo");
-            clientService.update(client);
-            System.out.println(client);
-
-            clientService.delete(client);
-
-            clients = clientDao.getAll();
-            for (Client c:
-                    clients) {
-                System.out.println(c);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
- */
