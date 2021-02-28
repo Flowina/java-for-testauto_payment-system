@@ -12,6 +12,7 @@
             <class name="tests.TestSettings" />
             <class name="tests.dao.ClientDaoTest" />
             <class name="tests.dao.AccountDaoTest" />
+            <class name="tests.dao.CardDaoTest" />
         </classes>
     </test>
     <!--<test name="Regression1">

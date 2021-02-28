@@ -8,8 +8,6 @@ import entities.Client;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CardDaoImpl implements CardDao {
 
@@ -82,9 +80,7 @@ public class CardDaoImpl implements CardDao {
     public void create(Card card) throws SQLException {
         String sql = "INSERT INTO Cards(accountId,card_number,owner_name,cvv,exp_year,exp_month) VALUES(?,?,?,?,?,?)";
 
-
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             PreparedStatement pstm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstm.setLong(1, card.getAccountId());
             pstm.setLong(2, card.getCardNumber());
@@ -104,14 +100,6 @@ public class CardDaoImpl implements CardDao {
                     throw new SQLException("Creating card failed, no ID obtained.");
                 }
             }
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -119,8 +107,8 @@ public class CardDaoImpl implements CardDao {
     public List<Card> getAll() throws SQLException {
         List<Card> result = new LinkedList<>();
         final String sql = "SELECT * FROM cards;";
-        final Connection con = connectionFactory.getConnection();
-        try (Statement stm = con.createStatement();
+        try (Connection con = connectionFactory.getConnection();
+             Statement stm = con.createStatement();
              ResultSet rs = stm.executeQuery(sql)) {
             while (rs.next()) {
 
@@ -134,22 +122,14 @@ public class CardDaoImpl implements CardDao {
                         rs.getShort("exp_month")
                 ));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ClientDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
 
     @Override
     public Card findById(long id) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
         final String sql = "SELECT * FROM cards WHERE id = " + id;
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             //TODO: use preparedstatement
             final Statement stm = con.createStatement();
 
@@ -157,26 +137,22 @@ public class CardDaoImpl implements CardDao {
 
             while (rs.next()) {
                 return new Card(
-                        DaoUtils.GetKey(rs, "id"),
-                        rs.getInt("accountId"),
-                        rs.getLong("card_number"),
-                        rs.getString("owner_name"),
-                        rs.getShort("cvv"),
-                        rs.getShort("exp_year"),
-                        rs.getShort("exp_month")
+                    DaoUtils.GetKey(rs, "id"),
+                    rs.getInt("accountId"),
+                    rs.getLong("card_number"),
+                    rs.getString("owner_name"),
+                    rs.getShort("cvv"),
+                    rs.getShort("exp_year"),
+                    rs.getShort("exp_month")
                 );
             }
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
     @Override
     public void update(Card card) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             String sql = "UPDATE Cards\n" +
                     "   SET accountId = ?\n" +
                     "      ,card_number = ?\n" +
@@ -194,27 +170,18 @@ public class CardDaoImpl implements CardDao {
             pstm.setShort(6, card.getExpMonth());
             pstm.setLong(7, card.getId().get());
 
-
             int affectedRows = pstm.executeUpdate();
-
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     @Override
     public void delete(Card card) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             String sql = "DELETE FROM cards WHERE id=? ;";
             PreparedStatement pstm = con.prepareStatement(sql);
-            pstm.setLong(7, card.getId().get());
+            pstm.setLong(1, card.getId().get());
 
             pstm.executeUpdate();
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }
