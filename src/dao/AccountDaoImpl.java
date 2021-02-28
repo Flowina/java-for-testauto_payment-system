@@ -36,8 +36,10 @@ public class AccountDaoImpl implements AccountDao {
                         rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
-                        rs.getDate("opening_date"),
-                        rs.getDate("closing_date")
+                        new Date(rs.getDate("opening_date").getTime()),
+                        rs.getDate("closing_date") == null
+                                ? null
+                                : new Date(rs.getDate("closing_date").getTime())
                 ));
             }
             con.close();
@@ -60,9 +62,7 @@ public class AccountDaoImpl implements AccountDao {
                 + "'" + account.getClosingDate() == null ? "NULL" : account.getClosingDate().toString() + "'";*/
         String sql = "INSERT INTO accounts (clientId, number, type, amount, opening_date, closing_date) VALUES (?, ?, ?, ?, ?, ?)";
 
-
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             PreparedStatement pstm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstm.setLong(1, account.getClientId());
             pstm.setInt(2, account.getNumber());
@@ -84,14 +84,6 @@ public class AccountDaoImpl implements AccountDao {
                     throw new SQLException("Creating account failed, no ID obtained.");
                 }
             }
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -110,8 +102,10 @@ public class AccountDaoImpl implements AccountDao {
                         rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
-                        rs.getDate("opening_date"),
-                        rs.getDate("closing_date")
+                        new Date(rs.getDate("opening_date").getTime()),
+                        rs.getDate("closing_date") == null
+                                ? null
+                                : new Date(rs.getDate("closing_date").getTime())
                 ));
             }
         } catch (SQLException e) {
@@ -144,8 +138,10 @@ public class AccountDaoImpl implements AccountDao {
                         rs.getInt("number"),
                         rs.getShort("type"),
                         rs.getDouble("amount"),
-                        rs.getDate("opening_date"),
-                        rs.getDate("closing_date")
+                        new java.util.Date(rs.getDate("opening_date").getTime()),
+                        rs.getDate("closing_date") == null
+                            ? null
+                            : new java.util.Date(rs.getDate("closing_date").getTime())
 
                 );
             }
@@ -159,9 +155,7 @@ public class AccountDaoImpl implements AccountDao {
 
     @Override
     public void update(Account account) throws SQLException {
-
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try (Connection con = connectionFactory.getConnection()) {
             String sql = "UPDATE accounts\n" +
                     "   SET clientId = ?\n" +
                     "      ,number = ?\n" +
@@ -181,26 +175,17 @@ public class AccountDaoImpl implements AccountDao {
                     : new java.sql.Date(account.getClosingDate().getTime()));
             pstm.setLong(7, account.getId().get());
             int affectedRows = pstm.executeUpdate();
-
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     @Override
     public void delete(Account account) throws SQLException {
-        final Connection con = connectionFactory.getConnection();
-        try {
+        try(Connection con = connectionFactory.getConnection()) {
             String sql = "DELETE FROM accounts WHERE id=? ;";
             PreparedStatement pstm = con.prepareStatement(sql);
-            pstm.setLong(7, account.getId().get());
+            pstm.setLong(1, account.getId().get());
 
             pstm.executeUpdate();
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
 <suite name="Suite1" verbose="1" >
-    <test name="ClientServiceTest" enabled="false">
+    <test name="services" enabled="false">
         <classes>
             <class name="tests.services.ClientServiceTest" />
             <class name="tests.services.AccountServiceTest" />
@@ -11,6 +11,7 @@
         <classes>
             <class name="tests.TestSettings" />
             <class name="tests.dao.ClientDaoTest" />
+            <class name="tests.dao.AccountDaoTest" />
         </classes>
     </test>
     <!--<test name="Regression1">
